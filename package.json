@@ -1,0 +1,23 @@
+{
+  "name": "finances-app",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "concurrently npm:start-api npm:start-app",
+    "start-api": "cd api && npm start",
+    "start-app": "cd app && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MeMark2/finances-app.git"
+  },
+  "author": "Jorge Ramirez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MeMark2/finances-app/issues"
+  },
+  "homepage": "https://github.com/MeMark2/finances-app#readme",
+  "dependencies": {
+    "concurrently": "^4.1.2"
+  }
+}
