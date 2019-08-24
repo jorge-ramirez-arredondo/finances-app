@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
 	Table,
 	TableBody,
@@ -7,14 +7,11 @@ import {
 	TableRow
 } from "@material-ui/core";
 
-import { getAccountTotals } from "../apiCalls/accountTotals";
+import { useAccountTotals } from "../utilities/apiCallHooks";
+import { amountFormatter } from "../utilities/displayFormatters";
 
 function Home(props) {
-	const [accountTotals, setAccountTotals] = useState(null);
-
-	useEffect(() => {
-		getAccountTotals().then(setAccountTotals);
-	}, []);
+	const [accountTotals] = useAccountTotals();
 
 	return (
 		<div>
@@ -23,21 +20,19 @@ function Home(props) {
 				<Table>
 					<TableHead>
 						<TableRow>
+							<TableCell>ID</TableCell>
 							<TableCell>Name</TableCell>
-							<TableCell>Total</TableCell>
 							<TableCell>Description</TableCell>
-							<TableCell>Active</TableCell>
+							<TableCell>Total</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
 						{accountTotals.map((accountTotal) => (
-							<TableRow key={accountTotal.Name}>
-								<TableCell>{accountTotal.Name}</TableCell>
-								<TableCell align="right">{accountTotal.Total}</TableCell>
-								<TableCell>{accountTotal.Description}</TableCell>
-								<TableCell>
-									{Boolean(accountTotal.Active) ? "True" : "False"}
-								</TableCell>
+							<TableRow key={accountTotal.id}>
+								<TableCell>{accountTotal.id}</TableCell>
+								<TableCell>{accountTotal.name}</TableCell>
+								<TableCell>{accountTotal.description}</TableCell>
+								<TableCell align="right">{amountFormatter(accountTotal.total)}</TableCell>
 							</TableRow>
 						))}
 					</TableBody>

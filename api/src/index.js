@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const accounts = require("./routes/accounts");
+const budgets = require("./routes/budgets");
 const accountTotals = require("./routes/accountTotals");
 const transactions = require("./routes/transactions");
 
@@ -13,6 +14,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(bodyParser.json());
 
 app.use("/accounts", accounts);
+app.use("/budgets", budgets);
 app.use("/accountTotals", accountTotals);
 app.use("/transactions", transactions);
 

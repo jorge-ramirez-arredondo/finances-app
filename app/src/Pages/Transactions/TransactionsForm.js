@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useCallback, useRef, useEffect } from "react";
+import React, { useState, useReducer, useRef, useEffect } from "react";
 import {
 	Button,
 	TextField
@@ -20,11 +20,10 @@ const ActionButtonRow = styled.div`
 `;
 
 const initialState = [{
-	accountID: "",
+	budgetID: "",
 	date: "",
 	amount: "",
 	description: "",
-	categoryID: "",
 	key: 0
 }];
 
@@ -33,11 +32,10 @@ function transactionsReducer(state, action) {
 		case "add": {
 			const {
 				transaction = {
-					accountID: "",
+					budgetID: "",
 					date: "",
 					amount: "",
 					description: "",
-					categoryID: "",
 					key: state[state.length - 1].key + 1
 				}
 			} = action;
@@ -89,33 +87,33 @@ function TransactionsForm({ onSaveSuccess }) {
 		transactionsDispatch
 	] = useReducer(transactionsReducer, initialState);
 
-	const lastAccountIDRef = useRef(null);
+	const lastBudgetIDRef = useRef(null);
 
-	const triggerLastAccountIDFocus = useEffectWithTrigger(() => {
-		lastAccountIDRef.current.focus();
+	const triggerLastBudgetIDFocus = useEffectWithTrigger(() => {
+		lastBudgetIDRef.current.focus();
 	});
 
 	return (
 		<div>
 			{transactions.map(({
 				key,
-				accountID,
+				budgetID,
 				date,
 				amount,
-				description,
-				categoryID
+				description
 			}, index) => (
 				<Row key={key}>
 					<TextField
-						label="AccountID"
-						value={accountID}
+						type="number"
+						label="Budget ID"
+						value={budgetID}
 						onChange={(event) => transactionsDispatch({
 							type: "update",
 							index,
-							transaction: { accountID: event.target.value }
+							transaction: { budgetID: event.target.value }
 						})}
 						inputRef={transactions.length === index + 1
-							? lastAccountIDRef
+							? lastBudgetIDRef
 							: null
 						}
 					/>
@@ -147,15 +145,6 @@ function TransactionsForm({ onSaveSuccess }) {
 							transaction: { description: event.target.value }
 						})}
 					/>
-					<TextField
-						label="CategoryID"
-						value={categoryID}
-						onChange={(event) => transactionsDispatch({
-							type: "update",
-							index,
-							transaction: { categoryID: event.target.value }
-						})}
-					/>
 					{transactions.length > 1
 						? (
 							<Button
@@ -182,7 +171,7 @@ function TransactionsForm({ onSaveSuccess }) {
 								key: lastTransaction.key + 1
 							}
 						});
-						triggerLastAccountIDFocus();
+						triggerLastBudgetIDFocus();
 					}}
 				>
 					Add
@@ -193,17 +182,15 @@ function TransactionsForm({ onSaveSuccess }) {
 					variant="contained"
 					color="primary"
 					onClick={() => postTransactions(transactions.map(({
-						accountID,
+						budgetID,
 						date,
 						amount,
-						description,
-						categoryID
+						description
 					}) => ({
-						AccountID: accountID,
-						Date: date,
-						Amount: amount,
-						Description: description,
-						CategoryID: categoryID
+						budgetID,
+						date,
+						amount,
+						description
 					}))).then(() => {
 						transactionsDispatch({ type: "clear" });
 						typeof onSaveSuccess === "function" && onSaveSuccess();

@@ -17,7 +17,9 @@ function NavBar({ location, history }) {
 			<div css="margin-top: 60px;" />
 			<AppBar>
 				<Tabs value={location.pathname} onChange={navigate}>
+					<Tab value="/accounts" label="Accounts" />
 					<Tab value="/accountTotals" label="Account Totals" />
+					<Tab value="/budgets" label="Budgets" />
 					<Tab value="/transactions" label="Transactions" />
 				</Tabs>
 			</AppBar>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import {
 	Table,
 	TableBody,
@@ -12,16 +12,13 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components";
 
-import { getTransactions } from "../../apiCalls/transactions";
+import { useAccountsMap, useBudgetsMap, usePaginatedTransactions } from "../../utilities/apiCallHooks";
+import { amountFormatter } from "../../utilities/displayFormatters";
 
 const LoadMoreRow = styled.div`
 	text-align: center;
 	margin-top: 15px;
 `;
-
-function amountFormatter(amount) {
-	return `$${(amount / 100).toFixed(2)}`;
-}
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -30,70 +27,41 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-function useTransactions({ orderBy = "date", orderDir = "desc", limit = 10 } = {}) {
-	const [transactions, setTransactions] = useState([]);
-	const [isLoading, setIsLoading] = useState(false);
-
-	useEffect(() => {
-		async function loadInitialTransactions() {
-			setIsLoading(true);
-			const initialTransactions = await getTransactions({
-				orderBy,
-				orderDir,
-				limit,
-				offset: 0
-			});
-
-			setTransactions(initialTransactions);
-			setIsLoading(false);
-		}
-		loadInitialTransactions();
-	}, [orderBy, orderDir, limit]);
-
-	const loadMoreTransactions = useCallback(async () => {
-		setIsLoading(true);
-		const newTransactions = await getTransactions({
-			orderBy,
-			orderDir,
-			limit,
-			offset: transactions.length
-		});
-
-		setTransactions([...transactions, ...newTransactions]);
-		setIsLoading(false);
-	}, [transactions, orderBy, orderDir, limit]);
-
-	return [isLoading, transactions, loadMoreTransactions];
-}
-
 function TransactionsTable() {
 	const classes = useStyles();
-	const [isLoading, transactions, loadMoreTransactions] = useTransactions();
+	const [budgetsMap] = useBudgetsMap();
+	const [accountsMap] = useAccountsMap();
+	const [transactions, loadMoreTransactions, isLoading] = usePaginatedTransactions();
 
 	return (
 		<Paper className={classes.root}>
 			Transactions
-			{transactions.length ?
+			{budgetsMap && accountsMap && transactions && transactions.length ?
 				<Table>
 					<TableHead>
 						<TableRow>
-							<TableCell>AccountID</TableCell>
+							<TableCell>Account</TableCell>
+							<TableCell>Budget</TableCell>
 							<TableCell>Date</TableCell>
 							<TableCell>Amount</TableCell>
 							<TableCell>Description</TableCell>
-							<TableCell>CategoryID</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{transactions.map((transaction) => (
-							<TableRow key={transaction.ID}>
-								<TableCell>{transaction.AccountID}</TableCell>
-								<TableCell>{transaction.Date}</TableCell>
-								<TableCell align="right">{amountFormatter(transaction.Amount)}</TableCell>
-								<TableCell>{transaction.Description}</TableCell>
-								<TableCell>{transaction.CategoryID}</TableCell>
-							</TableRow>
-						))}
+						{transactions.map((transaction) => {
+							const budget = budgetsMap[transaction.budgetID];
+							const account = accountsMap[budget.accountID];
+
+							return (
+								<TableRow key={transaction.id}>
+									<TableCell>({account.id}) {account.name}</TableCell>
+									<TableCell>({budget.id}) {budget.name}</TableCell>
+									<TableCell>{transaction.date}</TableCell>
+									<TableCell align="right">{amountFormatter(transaction.amount)}</TableCell>
+									<TableCell>{transaction.description}</TableCell>
+								</TableRow>
+							);
+						})}
 					</TableBody>
 				</Table>
 				: null}
