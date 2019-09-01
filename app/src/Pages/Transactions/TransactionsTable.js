@@ -54,8 +54,8 @@ function TransactionsTable() {
 
 							return (
 								<TableRow key={transaction.id}>
-									<TableCell>({account.id}) {account.name}</TableCell>
-									<TableCell>({budget.id}) {budget.name}</TableCell>
+									<TableCell>{account.name}</TableCell>
+									<TableCell>{budget.name}</TableCell>
 									<TableCell>{transaction.date}</TableCell>
 									<TableCell align="right">{amountFormatter(transaction.amount)}</TableCell>
 									<TableCell>{transaction.description}</TableCell>

@@ -6,6 +6,8 @@ import {
 import styled from "styled-components";
 
 import { postTransactions } from "../../apiCalls/transactions";
+import { useBudgets } from "../../utilities/apiCallHooks";
+import AutoSuggest from "../../components/inputs/AutoSuggest";
 
 const Row = styled.div`
 	display: flex;
@@ -82,6 +84,7 @@ function useEffectWithTrigger(effect, watchList = []) {
 }
 
 function TransactionsForm({ onSaveSuccess }) {
+	const [budgets] = useBudgets();
 	const [
 		transactions,
 		transactionsDispatch
@@ -90,28 +93,35 @@ function TransactionsForm({ onSaveSuccess }) {
 	const lastBudgetIDRef = useRef(null);
 
 	const triggerLastBudgetIDFocus = useEffectWithTrigger(() => {
-		lastBudgetIDRef.current.focus();
+		lastBudgetIDRef.current.input.focus();
 	});
 
 	return (
 		<div>
 			{transactions.map(({
 				key,
-				budgetID,
+				budgetInputValue,
+				budget,
 				date,
 				amount,
-				description
+				description,
 			}, index) => (
 				<Row key={key}>
-					<TextField
-						type="number"
-						label="Budget ID"
-						value={budgetID}
-						onChange={(event) => transactionsDispatch({
-							type: "update",
-							index,
-							transaction: { budgetID: event.target.value }
-						})}
+					<AutoSuggest
+						items={budgets}
+						inputValue={budgetInputValue}
+						getItemText={(item) => item.name}
+						onChange={(newInputValue, newSelectedItem) => {
+							transactionsDispatch({
+								type: "update",
+								index,
+								transaction: {
+									budgetInputValue: newInputValue,
+									budget: newSelectedItem
+								}
+							});
+						}}
+						label="Budget"
 						inputRef={transactions.length === index + 1
 							? lastBudgetIDRef
 							: null
@@ -182,12 +192,12 @@ function TransactionsForm({ onSaveSuccess }) {
 					variant="contained"
 					color="primary"
 					onClick={() => postTransactions(transactions.map(({
-						budgetID,
+						budget,
 						date,
 						amount,
 						description
 					}) => ({
-						budgetID,
+						budgetID: budget.id,
 						date,
 						amount,
 						description
