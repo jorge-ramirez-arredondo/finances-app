@@ -7,14 +7,8 @@ import styled from "styled-components";
 
 import { postTransactions } from "../../apiCalls/transactions";
 import { useBudgets } from "../../utilities/apiCallHooks";
-import AutoSuggest from "../../components/inputs/AutoSuggest";
-
-const Row = styled.div`
-	display: flex;
-	justify-content: space-evenly;
-	align-items: center;
-	margin-bottom: 10px;
-`;
+import { AutoSuggest } from "../../components/inputs";
+import { InputsRow } from "../../components/layout";
 
 const ActionButtonRow = styled.div`
 	text-align: right;
@@ -110,7 +104,7 @@ function TransactionsForm({ onSaveSuccess }) {
 				amount,
 				description,
 			}, index) => (
-				<Row key={key}>
+				<InputsRow key={key}>
 					<AutoSuggest
 						items={budgets}
 						inputValue={budgetInputValue}
@@ -168,9 +162,9 @@ function TransactionsForm({ onSaveSuccess }) {
 								Delete
 							</Button>
 						) : null}
-				</Row>
+				</InputsRow>
 			))}
-			<Row>
+			<InputsRow>
 				<Button
 					variant="contained"
 					color="primary"
@@ -189,7 +183,7 @@ function TransactionsForm({ onSaveSuccess }) {
 				>
 					Add
 				</Button>
-			</Row>
+			</InputsRow>
 			<ActionButtonRow>
 				<Button
 					variant="contained"

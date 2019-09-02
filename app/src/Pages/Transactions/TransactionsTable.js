@@ -6,35 +6,26 @@ import {
 	TableHead,
 	TableRow,
 	Button,
-	CircularProgress,
-	Paper,
-	makeStyles
+	CircularProgress
 } from "@material-ui/core";
 import styled from "styled-components";
 
 import { useAccountsMap, useBudgetsMap, usePaginatedTransactions } from "../../utilities/apiCallHooks";
 import { amountFormatter } from "../../utilities/displayFormatters";
+import { Section } from "../../components/layout";
 
 const LoadMoreRow = styled.div`
 	text-align: center;
 	margin-top: 15px;
 `;
 
-const useStyles = makeStyles(() => ({
-  root: {
-    padding: 20,
-    margin: 20
-  },
-}));
-
 function TransactionsTable() {
-	const classes = useStyles();
 	const [budgetsMap] = useBudgetsMap();
 	const [accountsMap] = useAccountsMap();
 	const [transactions, loadMoreTransactions, isLoading] = usePaginatedTransactions();
 
 	return (
-		<Paper className={classes.root}>
+		<Section>
 			Transactions
 			{budgetsMap && accountsMap && transactions && transactions.length ?
 				<Table>
@@ -76,7 +67,7 @@ function TransactionsTable() {
 					</Button>
 				}
 			</LoadMoreRow>
-		</Paper>
+		</Section>
 	);
 }
 
