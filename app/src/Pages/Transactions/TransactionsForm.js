@@ -21,6 +21,10 @@ const ActionButtonRow = styled.div`
 	margin: 0 20px;
 `;
 
+function dollarsToCents(amount) {
+	return Math.round(amount * 100);
+}
+
 const initialState = [{
 	budgetID: "",
 	date: "",
@@ -111,16 +115,14 @@ function TransactionsForm({ onSaveSuccess }) {
 						items={budgets}
 						inputValue={budgetInputValue}
 						getItemText={(item) => item.name}
-						onChange={(newInputValue, newSelectedItem) => {
-							transactionsDispatch({
-								type: "update",
-								index,
-								transaction: {
-									budgetInputValue: newInputValue,
-									budget: newSelectedItem
-								}
-							});
-						}}
+						onChange={(newInputValue, newSelectedItem) => transactionsDispatch({
+							type: "update",
+							index,
+							transaction: {
+								budgetInputValue: newInputValue,
+								budget: newSelectedItem
+							}
+						})}
 						label="Budget"
 						inputRef={transactions.length === index + 1
 							? lastBudgetIDRef
@@ -129,6 +131,7 @@ function TransactionsForm({ onSaveSuccess }) {
 					/>
 					<TextField
 						label="Date"
+						placeholder="YYYY-MM-DD"
 						value={date}
 						onChange={(event) => transactionsDispatch({
 							type: "update",
@@ -138,7 +141,7 @@ function TransactionsForm({ onSaveSuccess }) {
 					/>
 					<TextField
 						type="number"
-						label="Amount"
+						label="Amount ($)"
 						value={amount}
 						onChange={(event) => transactionsDispatch({
 							type: "update",
@@ -199,7 +202,7 @@ function TransactionsForm({ onSaveSuccess }) {
 					}) => ({
 						budgetID: budget.id,
 						date,
-						amount,
+						amount: dollarsToCents(Number(amount)),
 						description
 					}))).then(() => {
 						transactionsDispatch({ type: "clear" });
