@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import AccountsForm from "./AccountsForm";
+import AccountForm from "./AccountForm";
 import AccountsTable from "./AccountsTable";
 
 function Accounts() {
@@ -8,7 +8,7 @@ function Accounts() {
 
   return (
     <div>
-      <AccountsForm onSaveSuccess={() => setTableKey(tableKey + 1)} />
+      <AccountForm onSaveSuccess={() => setTableKey(tableKey + 1)} />
       <AccountsTable key={tableKey} />
     </div>
   );

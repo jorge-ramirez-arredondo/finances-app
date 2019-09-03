@@ -6,7 +6,7 @@ import { InputsRow } from "../../components/layout";
 
 const defaultNewAccountState = { name: "", description: "" };
 
-function AccountsForm(props) {
+function AccountForm(props) {
   const { onSaveSuccess } = props;
 
   const [newAccount, setNewAccount] = useState(defaultNewAccountState);
@@ -44,4 +44,4 @@ function AccountsForm(props) {
   );
 }
 
-export default AccountsForm;
+export default AccountForm;
