@@ -7,16 +7,17 @@ import {
   TableRow
 } from "@material-ui/core";
 
-import { useAccountsMap, useBudgets } from "../utilities/apiCallHooks";
+import { useAccountsMap, useBudgets } from "../../utilities/apiCallHooks";
+import { Section } from "../../components/layout";
 
-function Home(props) {
+function BudgetsTable(props) {
   const [accountsMap] = useAccountsMap();
   const [budgets] = useBudgets();
 
   return (
-    <div>
+    <Section>
       Budgets
-      {budgets ?
+      {budgets && accountsMap ?
         <Table>
           <TableHead>
             <TableRow>
@@ -38,8 +39,8 @@ function Home(props) {
           </TableBody>
         </Table>
         : null}
-    </div>
+    </Section>
   );
 }
 
-export default Home;
+export default BudgetsTable;

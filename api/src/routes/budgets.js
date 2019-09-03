@@ -15,7 +15,7 @@ const postBudgetsBodySchema = Joi.object().keys({
   budgets: Joi.array().items(Joi.object().keys({
     accountID: Joi.number().integer().required(),
     name: Joi.string().required(),
-    description: Joi.string()
+    description: Joi.string().allow("")
   }))
 });
 
@@ -28,6 +28,42 @@ router.post("/", async (req, res) => {
   const { budgets } = req.body;
 
   await db("Budgets").insert(budgets);
+
+  return res.status(200).end();
+});
+
+// Creat/Replace Budget
+const putBudgetBodySchema = Joi.object().keys({
+  budget: Joi.object().keys({
+    id: Joi.number().integer(),
+    accountID: Joi.number().integer().required(),
+    name: Joi.string().required(),
+    description: Joi.string().allow("")
+  })
+});
+
+router.put("/", async (req, res) => {
+  const { error } = putBudgetBodySchema.validate(req.body);
+  if (error) {
+    return res.status(400).send(error);
+  }
+
+  const { budget: {
+    id,
+    accountID,
+    name,
+    description
+  } } = req.body;
+
+  if (id !== null && id !== undefined) {
+    // Replace existing budget if there's an id
+    await db("Budgets")
+      .where({ id: id })
+      .update({ accountID, name, description });
+  } else {
+    // Create budget if there's no id
+    await db("Budgets").insert({ accountID, name, description });
+  }
 
   return res.status(200).end();
 });
