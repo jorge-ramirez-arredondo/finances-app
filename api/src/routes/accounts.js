@@ -14,7 +14,7 @@ router.get("/", async (req, res) => {
 const postAccountsBodySchema = Joi.object().keys({
   accounts: Joi.array().items(Joi.object().keys({
     name: Joi.string().required(),
-    description: Joi.string()
+    description: Joi.string().allow("")
   }))
 });
 
@@ -36,7 +36,7 @@ const putAccountBodySchema = Joi.object().keys({
   account: Joi.object().keys({
     id: Joi.number().integer(),
     name: Joi.string().required(),
-    description: Joi.string()
+    description: Joi.string().allow("")
   })
 });
 

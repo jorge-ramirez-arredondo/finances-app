@@ -54,7 +54,7 @@ const postTransactionsBodySchema = Joi.object().keys({
     budgetID: Joi.number().integer().required(),
     date: Joi.date().iso().required(),
     amount: Joi.number().integer().required(),
-    description: Joi.string()
+    description: Joi.string().allow("")
   }))
 });
 
