@@ -7,13 +7,14 @@ import {
   TableRow
 } from "@material-ui/core";
 
-import { useAccounts } from "../utilities/apiCallHooks";
+import { useAccounts } from "../../utilities/apiCallHooks";
+import { Section } from "../../components/layout";
 
-function Home(props) {
+function AccountsTable(props) {
   const [accounts] = useAccounts();
 
   return (
-    <div>
+    <Section>
       Accounts
       {accounts ?
         <Table>
@@ -35,8 +36,8 @@ function Home(props) {
           </TableBody>
         </Table>
         : null}
-    </div>
+    </Section>
   );
 }
 
-export default Home;
+export default AccountsTable;
