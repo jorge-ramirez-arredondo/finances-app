@@ -32,7 +32,14 @@ router.get("/", async (req, res) => {
 
   const _orderBy = _.find(columns, (column) => column.toLowerCase() === orderBy);
   if (_orderBy) {
-    dbQuery.orderBy(_orderBy, dirs.includes(orderDir) ? orderDir : undefined);
+    const queryOrdering = [{ column: _orderBy, order: dirs.includes(orderDir) ? orderDir : undefined}];
+
+    // Use id descending as a secondary ordering when possible
+    if (_orderBy !== "id") {
+      queryOrdering.push({ column: "id", order: "desc" });
+    }
+
+    dbQuery.orderBy(queryOrdering);
   }
 
   if (limit) {
