@@ -9,7 +9,7 @@ import AccountTotals from "../Pages/AccountTotals";
 import Transactions from "../Pages/Transactions";
 
 function AppRouter(props) {
-  const [activeDB, setActiveDB, dbs] = useDBsManagementContext();
+  const [activeDB, setActiveDB, dbs, getDBs] = useDBsManagementContext();
 
   return (
     <Switch>
@@ -21,6 +21,7 @@ function AppRouter(props) {
             activeDB={activeDB}
             setActiveDB={setActiveDB}
             dbs={dbs}
+            getDBs={getDBs}
           />
         )}
       />

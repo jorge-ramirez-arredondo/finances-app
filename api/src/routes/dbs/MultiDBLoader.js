@@ -18,33 +18,51 @@ class MultiDBLoader {
       .filter((fileName) => dbFileRegex.test(fileName))
       .map((fileName) => fileName.substring(0, fileName.length - 3))
       .value();
-  };
+  }
 
   doesDBExist(name) {
     return this.dbList.includes(name);
-  };
+  }
 
-  _openDB(name) {
+  async _openDB(name) {
+    this._dbsMap[name] = knex({
+      client: "sqlite3",
+      connection: {
+        filename: path.resolve(dbsFolder, `${name}.db`)
+      },
+      useNullAsDefault: true
+    });
+
+    await this._dbsMap[name].migrate.latest();
+  }
+
+  async _openExistingDB(name) {
     if (this.doesDBExist(name)) {
-      this._dbsMap[name] = knex({
-        client: "sqlite3",
-        connection: {
-          filename: path.resolve(dbsFolder, `${name}.db`)
-        },
-        useNullAsDefault: true
-      });
+      await this._openDB(name);
     } else {
       throw new Error(`Cannot load DB "${name}". DB file could not be found.`);
     }
-  };
+  }
 
-  getDB(name) {
+  async _openNewDB(name) {
+    if (!this.doesDBExist(name)) {
+      await this._openDB(name);
+    } else {
+      throw new Error(`DB "${name}" already exists.`);
+    }
+  }
+
+  async getDB(name) {
     if (!this._dbsMap[name]) {
-      this._openDB(name);
+      await this._openExistingDB(name);
     }
 
     return this._dbsMap[name];
-  };
+  }
+
+  async createDB(name) {
+    await this._openNewDB(name);
+  }
 }
 
 module.exports = MultiDBLoader;

@@ -8,11 +8,13 @@ import {
   Button
 } from "@material-ui/core";
 
-function DBs(props) {
+import { Section } from "../../components/layout";
+
+function DBsTable(props) {
   const { activeDB, setActiveDB, dbs } = props;
 
   return (
-    <div>
+    <Section>
       Databases
       {dbs ?
         <Table>
@@ -42,8 +44,8 @@ function DBs(props) {
           </TableBody>
         </Table>
       : "Loading..."}
-    </div>
+    </Section>
   );
 }
 
-export default DBs;
+export default DBsTable;
