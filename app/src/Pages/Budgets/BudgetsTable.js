@@ -10,9 +10,9 @@ import {
 import { useAccountsMap, useBudgets } from "../../utilities/apiCallHooks";
 import { Section } from "../../components/layout";
 
-function BudgetsTable(props) {
-  const [accountsMap] = useAccountsMap();
-  const [budgets] = useBudgets();
+function BudgetsTable({ activeDB }) {
+  const [accountsMap] = useAccountsMap(activeDB);
+  const [budgets] = useBudgets(activeDB);
 
   return (
     <Section>

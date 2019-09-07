@@ -10,8 +10,8 @@ import {
 import { useAccounts } from "../../utilities/apiCallHooks";
 import { Section } from "../../components/layout";
 
-function AccountsTable(props) {
-  const [accounts] = useAccounts();
+function AccountsTable({ activeDB }) {
+  const [accounts] = useAccounts(activeDB);
 
   return (
     <Section>

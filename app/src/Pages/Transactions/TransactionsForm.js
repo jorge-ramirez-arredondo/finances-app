@@ -81,8 +81,8 @@ function useEffectWithTrigger(effect, watchList = []) {
 	return () => setTriggerValue(triggerValue + 1);
 }
 
-function TransactionsForm({ onSaveSuccess }) {
-	const [budgets] = useBudgets();
+function TransactionsForm({ activeDB, onSaveSuccess }) {
+	const [budgets] = useBudgets(activeDB);
 	const [
 		transactions,
 		transactionsDispatch
@@ -188,7 +188,7 @@ function TransactionsForm({ onSaveSuccess }) {
 				<Button
 					variant="contained"
 					color="primary"
-					onClick={() => postTransactions(transactions.map(({
+					onClick={() => postTransactions(activeDB, transactions.map(({
 						budget,
 						date,
 						amount,

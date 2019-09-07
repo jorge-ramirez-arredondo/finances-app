@@ -14,9 +14,9 @@ const defaultNewBudgetState = {
 };
 
 function BudgetForm(props) {
-  const { onSaveSuccess } = props;
+  const { activeDB, onSaveSuccess } = props;
 
-  const [accounts] = useAccounts();
+  const [accounts] = useAccounts(activeDB);
   const [newBudget, setNewBudget] = useState(defaultNewBudgetState);
 
   return (
@@ -53,7 +53,7 @@ function BudgetForm(props) {
         variant="contained"
         color="primary"
         disabled={!newBudget.account || !newBudget.name}
-        onClick={() => putBudget({
+        onClick={() => putBudget(activeDB, {
           accountID: newBudget.account.id,
           name: newBudget.name,
           description: newBudget.description

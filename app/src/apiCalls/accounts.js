@@ -1,11 +1,11 @@
 import http from "./http";
 
-async function getAccounts() {
-	return (await http.get("/accounts")).data;
+async function getAccounts(dbName) {
+	return (await http.get(`/dbs/${dbName}/accounts`)).data;
 }
 
-async function putAccount(account) {
-  return http.put("/accounts", { account });
+async function putAccount(dbName, account) {
+  return http.put(`/dbs/${dbName}/accounts`, { account });
 }
 
 export {

@@ -1,10 +1,9 @@
 const Joi = require("@hapi/joi");
 const router = require("express").Router();
 
-const { db } = require("../db");
-
 // Get Accounts
 router.get("/", async (req, res) => {
+  const { db } = req;
   const accounts = await db("Accounts");
 
   res.json(accounts);
@@ -24,6 +23,7 @@ router.post("/", async (req, res) => {
     return res.status(400).send(error);
   }
 
+  const { db } = req;
   const { accounts } = req.body;
 
   await db("Accounts").insert(accounts);
@@ -46,6 +46,7 @@ router.put("/", async (req, res) => {
     return res.status(400).send(error);
   }
 
+  const { db } = req;
   const { account: {
     id,
     name,
@@ -76,6 +77,7 @@ router.delete("/:id", async (req, res) => {
     return res.status(400).send(error);
   }
 
+  const { db } = req;
   const { id } = req.params;
 
   await db("Accounts").where({ id }).delete();

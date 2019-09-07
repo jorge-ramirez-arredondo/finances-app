@@ -2,10 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const accounts = require("./routes/accounts");
-const budgets = require("./routes/budgets");
-const accountTotals = require("./routes/accountTotals");
-const transactions = require("./routes/transactions");
+const routes = require("./routes");
 
 const app = express();
 const port = 3030;
@@ -13,9 +10,6 @@ const port = 3030;
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(bodyParser.json());
 
-app.use("/accounts", accounts);
-app.use("/budgets", budgets);
-app.use("/accountTotals", accountTotals);
-app.use("/transactions", transactions);
+app.use("/", routes);
 
 app.listen(port, () => console.log(`App listening on port ${port}!`));

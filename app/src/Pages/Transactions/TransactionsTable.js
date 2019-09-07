@@ -19,10 +19,10 @@ const LoadMoreRow = styled.div`
 	margin-top: 15px;
 `;
 
-function TransactionsTable() {
-	const [budgetsMap] = useBudgetsMap();
-	const [accountsMap] = useAccountsMap();
-	const [transactions, loadMoreTransactions, isLoading] = usePaginatedTransactions();
+function TransactionsTable({ activeDB }) {
+	const [budgetsMap] = useBudgetsMap(activeDB);
+	const [accountsMap] = useAccountsMap(activeDB);
+	const [transactions, loadMoreTransactions, isLoading] = usePaginatedTransactions(activeDB);
 
 	return (
 		<Section>

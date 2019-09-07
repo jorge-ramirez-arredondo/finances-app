@@ -1,17 +1,33 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 
+import { getDBs as getDBsCall } from "../apiCalls/dbs";
 import { getAccounts as getAccountsCall } from "../apiCalls/accounts";
 import { getAccountTotals as getAccountTotalsCall } from "../apiCalls/accountTotals";
 import { getBudgets as getBudgetsCall } from "../apiCalls/budgets";
 import { getTransactions as getTransactionsCall } from "../apiCalls/transactions";
 
+// DBs
+function useDBs() {
+  const [dbs, setDBs] = useState(null);
+
+  const getDBs = useCallback(async () => {
+    setDBs(await getDBsCall());
+  }, []);
+
+  useEffect(() => {
+    getDBs();
+  }, [getDBs]);
+
+  return [dbs, getDBs];
+}
+
 // Accounts
-function useAccounts() {
+function useAccounts(activeDB) {
   const [accounts, setAccounts] = useState(null);
 
   const getAccounts = useCallback(async () => {
-    setAccounts(await getAccountsCall());
-  }, []);
+    setAccounts(await getAccountsCall(activeDB));
+  }, [activeDB]);
 
   useEffect(() => {
     getAccounts();
@@ -20,8 +36,8 @@ function useAccounts() {
   return [accounts, getAccounts];
 }
 
-function useAccountsMap() {
-  const [accounts, getAccounts] = useAccounts();
+function useAccountsMap(activeDB) {
+  const [accounts, getAccounts] = useAccounts(activeDB);
 
   const accountsMap = useMemo(() => {
     if (!accounts) return null;
@@ -39,12 +55,12 @@ function useAccountsMap() {
 }
 
 // Account Totals
-function useAccountTotals() {
+function useAccountTotals(activeDB) {
   const [accountTotals, setAccountTotals] = useState(null);
 
   const getAccountTotals = useCallback(async () => {
-    setAccountTotals(await getAccountTotalsCall());
-  }, []);
+    setAccountTotals(await getAccountTotalsCall(activeDB));
+  }, [activeDB]);
 
   useEffect(() => {
     getAccountTotals();
@@ -54,12 +70,12 @@ function useAccountTotals() {
 }
 
 // Budgets
-function useBudgets() {
+function useBudgets(activeDB) {
   const [budgets, setBudgets] = useState(null);
 
   const getBudgets = useCallback(async () => {
-    setBudgets(await getBudgetsCall());
-  }, []);
+    setBudgets(await getBudgetsCall(activeDB));
+  }, [activeDB]);
 
   useEffect(() => {
     getBudgets();
@@ -68,8 +84,8 @@ function useBudgets() {
   return [budgets, getBudgets];
 }
 
-function useBudgetsMap() {
-  const [budgets, getBudgets] = useBudgets();
+function useBudgetsMap(activeDB) {
+  const [budgets, getBudgets] = useBudgets(activeDB);
 
   const budgetsMap = useMemo(() => {
     if (!budgets) return null;
@@ -87,14 +103,14 @@ function useBudgetsMap() {
 }
 
 // Transactions
-function usePaginatedTransactions({ orderBy = "date", orderDir = "desc", limit = 10 } = {}) {
+function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc", limit = 10 } = {}) {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     async function loadInitialTransactions() {
       setIsLoading(true);
-      const initialTransactions = await getTransactionsCall({
+      const initialTransactions = await getTransactionsCall(activeDB, {
         orderBy,
         orderDir,
         limit,
@@ -105,11 +121,11 @@ function usePaginatedTransactions({ orderBy = "date", orderDir = "desc", limit =
       setIsLoading(false);
     }
     loadInitialTransactions();
-  }, [orderBy, orderDir, limit]);
+  }, [activeDB, orderBy, orderDir, limit]);
 
   const loadMoreTransactions = useCallback(async () => {
     setIsLoading(true);
-    const newTransactions = await getTransactionsCall({
+    const newTransactions = await getTransactionsCall(activeDB, {
       orderBy,
       orderDir,
       limit,
@@ -118,13 +134,14 @@ function usePaginatedTransactions({ orderBy = "date", orderDir = "desc", limit =
 
     setTransactions([...transactions, ...newTransactions]);
     setIsLoading(false);
-  }, [transactions, orderBy, orderDir, limit]);
+  }, [activeDB, transactions, orderBy, orderDir, limit]);
 
   return [transactions, loadMoreTransactions, isLoading];
 }
 
 
 export {
+  useDBs,
   useAccounts,
   useAccountsMap,
   useAccountTotals,

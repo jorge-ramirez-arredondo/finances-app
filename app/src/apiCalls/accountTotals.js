@@ -1,7 +1,7 @@
 import http from "./http";
 
-async function getAccountTotals() {
-	return (await http.get("/accountTotals")).data;
+async function getAccountTotals(dbName) {
+	return (await http.get(`/dbs/${dbName}/accountTotals`)).data;
 }
 
 export {

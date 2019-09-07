@@ -7,7 +7,7 @@ import { InputsRow } from "../../components/layout";
 const defaultNewAccountState = { name: "", description: "" };
 
 function AccountForm(props) {
-  const { onSaveSuccess } = props;
+  const { activeDB, onSaveSuccess } = props;
 
   const [newAccount, setNewAccount] = useState(defaultNewAccountState);
 
@@ -33,7 +33,7 @@ function AccountForm(props) {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => putAccount(newAccount).then(() => {
+        onClick={() => putAccount(activeDB, newAccount).then(() => {
           setNewAccount(defaultNewAccountState);
           typeof onSaveSuccess === "function" && onSaveSuccess();
         })}

@@ -11,7 +11,9 @@ import { useAccountTotals } from "../utilities/apiCallHooks";
 import { amountFormatter } from "../utilities/displayFormatters";
 
 function Home(props) {
-	const [accountTotals] = useAccountTotals();
+	const { activeDB } = props;
+
+	const [accountTotals] = useAccountTotals(activeDB);
 
 	return (
 		<div>

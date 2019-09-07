@@ -2,8 +2,6 @@ const _ = require("lodash");
 const Joi = require("@hapi/joi");
 const router = require("express").Router();
 
-const { db } = require("../db");
-
 // Get Transactions
 const columns = ["id","budgetID","date","amount","description"];
 const dirs = ["asc", "desc"];
@@ -21,6 +19,7 @@ router.get("/", async (req, res) => {
     return res.status(400).send(error);
   }
 
+  const { db } = req;
   const {
     orderBy = columns[0],
     orderDir = dirs[0],
@@ -71,6 +70,7 @@ router.post("/", async (req, res) => {
     return res.status(400).send(error);
   }
 
+  const { db } = req;
   const { transactions } = req.body;
 
   await db("Transactions").insert(transactions);

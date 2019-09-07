@@ -1,13 +1,13 @@
 import http from "./http";
 
-async function getTransactions(params) {
-	return (await http.get("/transactions", {
+async function getTransactions(dbName, params) {
+	return (await http.get(`/dbs/${dbName}/transactions`, {
 		params
 	})).data;
 }
 
-async function postTransactions(transactions) {
-	return http.post("/transactions", {
+async function postTransactions(dbName, transactions) {
+	return http.post(`/dbs/${dbName}/transactions`, {
 		transactions: Array.isArray(transactions)
 			? transactions
 			: [transactions]
