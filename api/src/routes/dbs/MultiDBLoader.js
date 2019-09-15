@@ -3,7 +3,9 @@ const _ = require("lodash");
 const path = require("path");
 const fs = require("fs");
 
-const dbsFolder = path.resolve(__dirname, "../../../data/");
+const config = require("../../config");
+
+const dbsFolder = config.dbsFolder || path.resolve(__dirname, "../../../data/");
 const dbFileRegex = /\.db$/i;
 
 class MultiDBLoader {
