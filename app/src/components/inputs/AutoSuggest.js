@@ -28,19 +28,27 @@ function renderInputComponent(inputProps) {
   );
 }
 
-const genRenderSuggestion = (getItemText) => (suggestion, { query, isHighlighted }) => {
+function defaultRenderSuggestion(highlightedText, suggestion, getItemText) {
+  return highlightedText;
+}
+
+const renderSuggestionWrapper = (renderSuggestion, getItemText) => (suggestion, { query, isHighlighted }) => {
   const matches = match(getItemText(suggestion), query);
   const parts = parse(getItemText(suggestion), matches);
 
+  const highlightedText = (
+    <React.Fragment>
+      {parts.map(part => (
+        <span key={part.text} style={{ fontWeight: part.highlight ? "bold" : "regular" }}>
+          {part.text}
+        </span>
+      ))}
+    </React.Fragment>
+  );
+
   return (
     <MenuItem selected={isHighlighted} component="div">
-      <div>
-        {parts.map(part => (
-          <span key={part.text} style={{ fontWeight: part.highlight ? 500 : 400 }}>
-            {part.text}
-          </span>
-        ))}
-      </div>
+      {renderSuggestion(highlightedText, suggestion, getItemText)}
     </MenuItem>
   );
 };
@@ -100,6 +108,7 @@ export default function AutoSuggest(props) {
   const {
     items,
     inputValue = "",
+    renderSuggestion = defaultRenderSuggestion,
     getItemText = defaultGetItemText,
     onChange,
     label = "",
@@ -139,7 +148,7 @@ export default function AutoSuggest(props) {
     onSuggestionsClearRequested: handleSuggestionsClearRequested,
     onSuggestionSelected: handleOnSuggestionSelected,
     getSuggestionValue: getItemText,
-    renderSuggestion: genRenderSuggestion(getItemText)
+    renderSuggestion: renderSuggestionWrapper(renderSuggestion, getItemText)
   };
 
   return (
