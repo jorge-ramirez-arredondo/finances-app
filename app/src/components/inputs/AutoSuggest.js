@@ -53,7 +53,7 @@ const renderSuggestionWrapper = (renderSuggestion, getItemText) => (suggestion, 
   );
 };
 
-function getDisplaySuggestions(suggestions, getItemText, value = "") {
+function getDisplaySuggestions(suggestions, getItemText, value = "", maxSuggestions) {
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
   let count = 0;
@@ -62,7 +62,7 @@ function getDisplaySuggestions(suggestions, getItemText, value = "") {
     ? []
     : suggestions.filter(suggestion => {
         const keep =
-          count < 5 && getItemText(suggestion).slice(0, inputLength).toLowerCase() === inputValue;
+          count < maxSuggestions && getItemText(suggestion).slice(0, inputLength).toLowerCase() === inputValue;
 
         if (keep) {
           count += 1;
@@ -110,6 +110,7 @@ export default function AutoSuggest(props) {
     inputValue = "",
     renderSuggestion = defaultRenderSuggestion,
     getItemText = defaultGetItemText,
+    maxSuggestions = 5,
     onChange,
     label = "",
     placeholder = "",
@@ -120,7 +121,7 @@ export default function AutoSuggest(props) {
   const [stateSuggestions, setSuggestions] = React.useState([]);
 
   const handleSuggestionsFetchRequested = ({ value }) => {
-    setSuggestions(getDisplaySuggestions(items, getItemText, value));
+    setSuggestions(getDisplaySuggestions(items, getItemText, value, maxSuggestions));
   };
 
   const handleSuggestionsClearRequested = () => {

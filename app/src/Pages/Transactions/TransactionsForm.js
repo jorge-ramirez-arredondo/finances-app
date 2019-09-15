@@ -110,6 +110,7 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
             items={budgets}
             inputValue={budgetInputValue}
             getItemText={(item) => item.name}
+            maxSuggestions={10}
             onChange={(newInputValue, newSelectedItem) => transactionsDispatch({
               type: "update",
               index,
