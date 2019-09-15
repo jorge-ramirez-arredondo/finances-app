@@ -6,6 +6,7 @@ const dbNameRouter = express.Router();
 const accounts = require("./routes/accounts");
 const budgets = require("./routes/budgets");
 const accountTotals = require("./routes/accountTotals");
+const budgetTotals = require("./routes/budgetTotals");
 const transactions = require("./routes/transactions");
 const MultiDBLoader = require("./MultiDBLoader");
 
@@ -46,6 +47,7 @@ dbNameRouter.use(async (req, res, next) => {
 dbNameRouter.use("/accounts", accounts);
 dbNameRouter.use("/budgets", budgets);
 dbNameRouter.use("/accountTotals", accountTotals);
+dbNameRouter.use("/budgetTotals", budgetTotals);
 dbNameRouter.use("/transactions", transactions);
 
 router.use("/:dbName", (req, res, next) => {

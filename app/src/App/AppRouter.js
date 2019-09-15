@@ -6,6 +6,7 @@ import DBs from "../Pages/DBs";
 import Accounts from "../Pages/Accounts";
 import Budgets from "../Pages/Budgets";
 import AccountTotals from "../Pages/AccountTotals";
+import BudgetTotals from "../Pages/BudgetTotals";
 import Transactions from "../Pages/Transactions";
 
 function AppRouter(props) {
@@ -48,6 +49,15 @@ function AppRouter(props) {
         path="/budgets"
         render={(renderProps) => (
           <Budgets
+            {...renderProps}
+            activeDB={activeDB}
+          />
+        )}
+      />
+      <Route
+        path="/budgetTotals"
+        render={(renderProps) => (
+          <BudgetTotals
             {...renderProps}
             activeDB={activeDB}
           />

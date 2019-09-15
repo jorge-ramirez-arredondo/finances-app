@@ -10,7 +10,7 @@ import {
 import { useAccountTotals } from "../utilities/apiCallHooks";
 import { amountFormatter } from "../utilities/displayFormatters";
 
-function Home(props) {
+function AccountTotals(props) {
 	const { activeDB } = props;
 
 	const [accountTotals] = useAccountTotals(activeDB);
@@ -44,4 +44,4 @@ function Home(props) {
 	);
 }
 
-export default Home;
+export default AccountTotals;

@@ -32,6 +32,7 @@ function NavBar({ location, history }) {
             <Tab value="/accounts" label="Accounts" disabled={!activeDB}/>
             <Tab value="/accountTotals" label="Account Totals" disabled={!activeDB}/>
             <Tab value="/budgets" label="Budgets" disabled={!activeDB}/>
+            <Tab value="/budgetTotals" label="Budget Totals" disabled={!activeDB}/>
             <Tab value="/transactions" label="Transactions" disabled={!activeDB}/>
           </Tabs>
           <div css="margin-right: 20px;">{activeDB}</div>

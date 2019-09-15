@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { getDBs as getDBsCall } from "../apiCalls/dbs";
 import { getAccounts as getAccountsCall } from "../apiCalls/accounts";
 import { getAccountTotals as getAccountTotalsCall } from "../apiCalls/accountTotals";
+import { getBudgetTotals as getBudgetTotalsCall } from "../apiCalls/budgetTotals";
 import { getBudgets as getBudgetsCall } from "../apiCalls/budgets";
 import { getTransactions as getTransactionsCall } from "../apiCalls/transactions";
 
@@ -102,6 +103,21 @@ function useBudgetsMap(activeDB) {
   return [budgetsMap, getBudgets];
 }
 
+// Budget Totals
+function useBudgetTotals(activeDB) {
+  const [budgetTotals, setBudgetTotals] = useState(null);
+
+  const getBudgetTotals = useCallback(async () => {
+    setBudgetTotals(await getBudgetTotalsCall(activeDB));
+  }, [activeDB]);
+
+  useEffect(() => {
+    getBudgetTotals();
+  }, [getBudgetTotals]);
+
+  return [budgetTotals, getBudgetTotals];
+}
+
 // Transactions
 function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc", limit = 10 } = {}) {
   const [transactions, setTransactions] = useState([]);
@@ -147,5 +163,6 @@ export {
   useAccountTotals,
   useBudgets,
   useBudgetsMap,
+  useBudgetTotals,
   usePaginatedTransactions
 };
