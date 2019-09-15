@@ -10,8 +10,7 @@ exports.up = function(knex) {
     from Accounts a
     left outer join Budgets b on a.id = b.accountID
     left outer join Transactions t on b.id = t.budgetID
-    group by a.id;
-    select * from AccountTotals;
+    group by a.id
   `);
 };
 
