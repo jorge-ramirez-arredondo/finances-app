@@ -21,7 +21,6 @@ function AccountsTable({ activeDB }) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Total</TableCell>
@@ -30,7 +29,6 @@ function AccountsTable({ activeDB }) {
           <TableBody>
             {accountTotals.map((accountTotal) => (
               <TableRow key={accountTotal.id}>
-                <TableCell>{accountTotal.id}</TableCell>
                 <TableCell>{accountTotal.name}</TableCell>
                 <TableCell>{accountTotal.description}</TableCell>
                 <TableCell align="right">{amountFormatter(accountTotal.total)}</TableCell>

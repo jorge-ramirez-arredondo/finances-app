@@ -22,9 +22,8 @@ function BudgetsTable({ activeDB }) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell>Name</TableCell>
               <TableCell>Account</TableCell>
+              <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>Total</TableCell>
             </TableRow>
@@ -32,9 +31,8 @@ function BudgetsTable({ activeDB }) {
           <TableBody>
             {budgetTotals.map((budgetTotal) => (
               <TableRow key={budgetTotal.id}>
-                <TableCell>{budgetTotal.id}</TableCell>
-                <TableCell>{budgetTotal.name}</TableCell>
                 <TableCell>{accountsMap[budgetTotal.accountID].name}</TableCell>
+                <TableCell>{budgetTotal.name}</TableCell>
                 <TableCell>{budgetTotal.description}</TableCell>
                 <TableCell align="right">{amountFormatter(budgetTotal.total)}</TableCell>
               </TableRow>
