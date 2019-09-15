@@ -7,17 +7,18 @@ import {
   TableRow
 } from "@material-ui/core";
 
-import { useAccountsMap, useBudgets } from "../../utilities/apiCallHooks";
+import { useAccountsMap, useBudgetTotals } from "../../utilities/apiCallHooks";
+import { amountFormatter } from "../../utilities/displayFormatters";
 import { Section } from "../../components/layout";
 
 function BudgetsTable({ activeDB }) {
   const [accountsMap] = useAccountsMap(activeDB);
-  const [budgets] = useBudgets(activeDB);
+  const [budgetTotals] = useBudgetTotals(activeDB);
 
   return (
     <Section>
       Budgets
-      {budgets && accountsMap ?
+      {budgetTotals && accountsMap ?
         <Table>
           <TableHead>
             <TableRow>
@@ -25,15 +26,17 @@ function BudgetsTable({ activeDB }) {
               <TableCell>Name</TableCell>
               <TableCell>Account</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {budgets.map((budget) => (
-              <TableRow key={budget.id}>
-                <TableCell>{budget.id}</TableCell>
-                <TableCell>{budget.name}</TableCell>
-                <TableCell>{accountsMap[budget.accountID].name}</TableCell>
-                <TableCell>{budget.description}</TableCell>
+            {budgetTotals.map((budgetTotal) => (
+              <TableRow key={budgetTotal.id}>
+                <TableCell>{budgetTotal.id}</TableCell>
+                <TableCell>{budgetTotal.name}</TableCell>
+                <TableCell>{accountsMap[budgetTotal.accountID].name}</TableCell>
+                <TableCell>{budgetTotal.description}</TableCell>
+                <TableCell align="right">{amountFormatter(budgetTotal.total)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
