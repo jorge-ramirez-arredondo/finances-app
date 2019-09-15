@@ -7,30 +7,33 @@ import {
   TableRow
 } from "@material-ui/core";
 
-import { useAccounts } from "../../utilities/apiCallHooks";
+import { useAccountTotals } from "../../utilities/apiCallHooks";
+import { amountFormatter } from "../../utilities/displayFormatters";
 import { Section } from "../../components/layout";
 
 function AccountsTable({ activeDB }) {
-  const [accounts] = useAccounts(activeDB);
+  const [accountTotals] = useAccountTotals(activeDB);
 
   return (
     <Section>
       Accounts
-      {accounts ?
+      {accountTotals ?
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Description</TableCell>
+              <TableCell>Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {accounts.map((account) => (
-              <TableRow key={account.id}>
-                <TableCell>{account.id}</TableCell>
-                <TableCell>{account.name}</TableCell>
-                <TableCell>{account.description}</TableCell>
+            {accountTotals.map((accountTotal) => (
+              <TableRow key={accountTotal.id}>
+                <TableCell>{accountTotal.id}</TableCell>
+                <TableCell>{accountTotal.name}</TableCell>
+                <TableCell>{accountTotal.description}</TableCell>
+                <TableCell align="right">{amountFormatter(accountTotal.total)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
