@@ -6,6 +6,7 @@ import { getAccountTotals as getAccountTotalsCall } from "../apiCalls/accountTot
 import { getBudgetTotals as getBudgetTotalsCall } from "../apiCalls/budgetTotals";
 import { getBudgets as getBudgetsCall } from "../apiCalls/budgets";
 import { getTransactions as getTransactionsCall } from "../apiCalls/transactions";
+import { getTransactionSets as getTransactionSetsCall } from "../apiCalls/transactionSets";
 
 // DBs
 function useDBs() {
@@ -155,6 +156,21 @@ function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc
   return [transactions, loadMoreTransactions, isLoading];
 }
 
+// TransactionSets
+function useTransactionSets(activeDB) {
+  const [transactionSets, setTransactionSets] = useState(null);
+
+  const getTransactionSets = useCallback(async () => {
+    setTransactionSets(await getTransactionSetsCall(activeDB));
+  }, [activeDB]);
+
+  useEffect(() => {
+    getTransactionSets();
+  }, [getTransactionSets]);
+
+  return [transactionSets, getTransactionSets];
+}
+
 
 export {
   useDBs,
@@ -164,5 +180,6 @@ export {
   useBudgets,
   useBudgetsMap,
   useBudgetTotals,
-  usePaginatedTransactions
+  usePaginatedTransactions,
+  useTransactionSets
 };
