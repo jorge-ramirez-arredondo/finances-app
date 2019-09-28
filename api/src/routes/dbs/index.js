@@ -8,6 +8,7 @@ const budgets = require("./routes/budgets");
 const accountTotals = require("./routes/accountTotals");
 const budgetTotals = require("./routes/budgetTotals");
 const transactions = require("./routes/transactions");
+const transactionSets = require("./routes/transactionSets");
 const MultiDBLoader = require("./MultiDBLoader");
 
 // Get DB names
@@ -49,6 +50,7 @@ dbNameRouter.use("/budgets", budgets);
 dbNameRouter.use("/accountTotals", accountTotals);
 dbNameRouter.use("/budgetTotals", budgetTotals);
 dbNameRouter.use("/transactions", transactions);
+dbNameRouter.use("/transactionSets", transactionSets);
 
 router.use("/:dbName", (req, res, next) => {
   req.dbName = req.params.dbName;
