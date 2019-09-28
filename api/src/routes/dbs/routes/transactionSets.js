@@ -103,8 +103,6 @@ router.put("/", async (req, res) => {
       // Insert transaction set
       const [newID] = await trx("TransactionSets").insert({ name, description });
 
-      console.warn(newID);
-
       // Insert items
       await trx("TransactionSetItems").insert(items.map((item) => ({
         transactionSetID: newID,
