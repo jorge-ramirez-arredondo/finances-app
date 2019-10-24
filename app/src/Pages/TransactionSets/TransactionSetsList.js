@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
+  TextField,
   ExpansionPanel,
   ExpansionPanelSummary,
   ExpansionPanelDetails
 } from "@material-ui/core";
 import styled from "styled-components/macro";
 
+import { postTransactions } from "../../apiCalls/transactions";
 import { useTransactionSets, useBudgetsMap, useAccountsMap } from "../../utilities/apiCallHooks";
 import { amountFormatter } from "../../utilities/displayFormatters";
 import { InputsRow } from "../../components/layout";
@@ -29,6 +31,7 @@ function TransactionSetsList({ activeDB, onEditTransactionSet }) {
   const [transactionSets] = useTransactionSets(activeDB);
   const [budgetsMap] = useBudgetsMap(activeDB);
   const [accountsMap] = useAccountsMap(activeDB);
+  const [dates, setDates] = useState({});
 
   return (
     <div>
@@ -63,6 +66,34 @@ function TransactionSetsList({ activeDB, onEditTransactionSet }) {
                     accountName={accountsMap[budgetsMap[budgetID].accountID].name}
                   />
                 ))}
+                <InputsRow>
+                  <TextField
+                    label="Date"
+                    placeholder="YYYY-MM-DD"
+                    value={dates[id] || ""}
+                    onChange={(event) => setDates({
+                      ...dates,
+                      [id]: event.target.value
+                    })}
+                  />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => postTransactions(activeDB, items.map(({
+                      budgetID,
+                      amount,
+                      description: itemDescription
+                    }) => ({
+                      budgetID,
+                      date: dates[id],
+                      amount,
+                      description: itemDescription
+                    })))}
+                    disabled={!dates[id]}
+                  >
+                    Execute Set
+                  </Button>
+                </InputsRow>
               </div>
             </ExpansionPanelDetails>
           </ExpansionPanel>
