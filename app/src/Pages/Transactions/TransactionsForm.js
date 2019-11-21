@@ -198,20 +198,37 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
         <Button
           variant="contained"
           color="primary"
-          onClick={() => postTransactions(activeDB, transactions.map(({
-            budget,
-            date,
-            amount,
-            description
-          }) => ({
-            budgetID: budget.id,
-            date,
-            amount: dollarsToCents(Number(amount)),
-            description
-          }))).then(() => {
-            transactionsDispatch({ type: "clear" });
-            typeof onSaveSuccess === "function" && onSaveSuccess();
-          })}
+          onClick={() => {
+            let hasError = false;
+            const body = transactions.map(({
+              budget,
+              date,
+              amount,
+              description
+            }, index) => {
+              if (!budget) {
+                hasError = true;
+                console.error(`No budget selected at row index ${index}.`);
+                return null;
+              }
+
+              return {
+                budgetID: budget.id,
+                date,
+                amount: dollarsToCents(Number(amount)),
+                description
+              };
+            });
+
+            if (hasError) {
+              return;
+            }
+
+            postTransactions(activeDB, body).then(() => {
+              transactionsDispatch({ type: "clear" });
+              typeof onSaveSuccess === "function" && onSaveSuccess();
+            });
+          }}
         >
           Save Transactions
         </Button>
