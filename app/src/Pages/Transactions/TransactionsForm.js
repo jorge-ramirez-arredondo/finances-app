@@ -9,6 +9,7 @@ import { postTransactions } from "../../apiCalls/transactions";
 import { useBudgets, useAccountsMap } from "../../utilities/apiCallHooks";
 import { AutoSuggest } from "../../components/inputs";
 import { InputsRow } from "../../components/layout";
+import CSVLoader from "./CSVLoader";
 
 const ActionButtonRow = styled.div`
   text-align: right;
@@ -51,6 +52,11 @@ function transactionsReducer(state, action) {
         ...state.slice(index + 1)
       ];
     }
+    case "replaceAll": {
+      const { transactions } = action;
+
+      return transactions;
+    }
     case "update": {
       const { index, transaction } = action;
 
@@ -90,6 +96,7 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
   ] = useReducer(transactionsReducer, initialState);
 
   const lastBudgetIDRef = useRef(null);
+  const [csvLoaderModalOpen, setCSVLoaderModalOpen] = useState(false);
 
   const triggerLastBudgetIDFocus = useEffectWithTrigger(() => {
     lastBudgetIDRef.current.input.focus();
@@ -97,6 +104,26 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
 
   return (
     <div>
+      <CSVLoader
+        open={csvLoaderModalOpen}
+        onClose={() => setCSVLoaderModalOpen(false)}
+        onCSVLoad={(newTransactions) => {
+          transactionsDispatch({
+            type: "replaceAll",
+            transactions: newTransactions
+          });
+          setCSVLoaderModalOpen(false);
+        }}
+      />
+      <ActionButtonRow>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setCSVLoaderModalOpen(true)}
+        >
+          CSV Loader
+        </Button>
+      </ActionButtonRow>
       {transactions.map(({
         key,
         budgetInputValue,
