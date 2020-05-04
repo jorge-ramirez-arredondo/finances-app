@@ -54,6 +54,10 @@ function parseCIBCCSVTransactions(text) {
 		};
 	});
 
+	// By default, transactions from CIBC CSV's come in desc order by date.
+	// Switched to match asc order for the sake of consistency with TD CSV's.
+	transactions.reverse();
+
 	return transactions;
 }
 
