@@ -4,7 +4,8 @@ import {
   TextField,
   ExpansionPanel,
   ExpansionPanelSummary,
-  ExpansionPanelDetails
+  ExpansionPanelDetails,
+  CircularProgress
 } from "@material-ui/core";
 import styled from "styled-components/macro";
 
@@ -32,6 +33,7 @@ function TransactionSetsList({ activeDB, onEditTransactionSet }) {
   const [budgetsMap] = useBudgetsMap(activeDB);
   const [accountsMap] = useAccountsMap(activeDB);
   const [dates, setDates] = useState({});
+  const [saving, setSaving] = useState(false);
 
   return (
     <div>
@@ -79,18 +81,27 @@ function TransactionSetsList({ activeDB, onEditTransactionSet }) {
                   <Button
                     variant="contained"
                     color="primary"
-                    onClick={() => postTransactions(activeDB, items.map(({
-                      budgetID,
-                      amount,
-                      description: itemDescription
-                    }) => ({
-                      budgetID,
-                      date: dates[id],
-                      amount,
-                      description: itemDescription
-                    })))}
-                    disabled={!dates[id]}
+                    onClick={async () => {
+                      setSaving(true);
+                      await postTransactions(activeDB, items.map(({
+                         budgetID,
+                         amount,
+                         description: itemDescription
+                       }) => ({
+                         budgetID,
+                         date: dates[id],
+                         amount,
+                         description: itemDescription
+                       })));
+                      setDates({
+                        ...dates,
+                        [id]: ""
+                      });
+                      setSaving(false);
+                    }}
+                    disabled={!dates[id] || saving}
                   >
+                    {saving && <CircularProgress size={24} />}
                     Execute Set
                   </Button>
                 </InputsRow>
