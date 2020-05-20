@@ -84,15 +84,15 @@ function TransactionSetsList({ activeDB, onEditTransactionSet }) {
                     onClick={async () => {
                       setSaving(true);
                       await postTransactions(activeDB, items.map(({
-                         budgetID,
-                         amount,
-                         description: itemDescription
-                       }) => ({
-                         budgetID,
-                         date: dates[id],
-                         amount,
-                         description: itemDescription
-                       })));
+                        budgetID,
+                        amount,
+                        description: itemDescription
+                      }) => ({
+                        budgetID,
+                        date: dates[id],
+                        amount,
+                        description: itemDescription
+                      })));
                       setDates({
                         ...dates,
                         [id]: ""
