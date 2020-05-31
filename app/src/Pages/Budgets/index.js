@@ -6,9 +6,17 @@ import BudgetsTable from "./BudgetsTable";
 function Budgets({ activeDB }) {
   const [tableKey, setTableKey] = useState(0);
 
+  function refreshTable() {
+    setTableKey(tableKey + 1);
+  }
+
   return (
     <div>
-      <BudgetForm activeDB={activeDB} onSaveSuccess={() => setTableKey(tableKey + 1)} />
+      <BudgetForm
+        activeDB={activeDB}
+        onSaveSuccess={refreshTable}
+        onQuickTransferSuccess={refreshTable}
+      />
       <BudgetsTable key={tableKey} activeDB={activeDB} />
     </div>
   );

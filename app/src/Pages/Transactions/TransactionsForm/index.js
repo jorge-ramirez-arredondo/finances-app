@@ -7,6 +7,7 @@ import styled from "styled-components/macro";
 
 import { postTransactions } from "../../../apiCalls/transactions";
 import { useBudgets, useAccountsMap } from "../../../utilities/apiCallHooks";
+import { QuickTransferModal } from "../../../components/modals";
 import { AutoSuggest } from "../../../components/inputs";
 import { InputsRow } from "../../../components/layout";
 import CSVLoader from "./CSVLoader";
@@ -14,6 +15,11 @@ import CSVLoader from "./CSVLoader";
 const ActionButtonRow = styled.div`
   text-align: right;
   margin: 0 20px;
+  & > * {
+    &:not(:last-child) {
+      margin-right: 15px;
+    }
+  }
 `;
 
 function dollarsToCents(amount) {
@@ -87,7 +93,7 @@ function useEffectWithTrigger(effect, watchList = []) {
   return () => setTriggerValue(triggerValue + 1);
 }
 
-function TransactionsForm({ activeDB, onSaveSuccess }) {
+function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
   const [budgets] = useBudgets(activeDB);
   const [accountsMap] = useAccountsMap(activeDB);
   const [
@@ -97,6 +103,7 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
 
   const lastBudgetIDRef = useRef(null);
   const [csvLoaderModalOpen, setCSVLoaderModalOpen] = useState(false);
+  const [quickTransferModalOpen, setQuickTransferModalOpen] = useState(false);
 
   const triggerLastBudgetIDFocus = useEffectWithTrigger(() => {
     lastBudgetIDRef.current.input.focus();
@@ -115,6 +122,12 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
           setCSVLoaderModalOpen(false);
         }}
       />
+      <QuickTransferModal
+        open={quickTransferModalOpen}
+        onClose={() => setQuickTransferModalOpen(false)}
+        onTransferSuccess={onQuickTransferSuccess}
+        activeDB={activeDB}
+      />
       <ActionButtonRow>
         <Button
           variant="contained"
@@ -122,6 +135,13 @@ function TransactionsForm({ activeDB, onSaveSuccess }) {
           onClick={() => setCSVLoaderModalOpen(true)}
         >
           CSV Loader
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setQuickTransferModalOpen(true)}
+        >
+          Quick Transfer
         </Button>
       </ActionButtonRow>
       {transactions.map(({
