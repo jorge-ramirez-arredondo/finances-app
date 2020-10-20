@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useRef, useEffect } from "react";
+import React, { useState, useReducer, useRef, useEffect, useCallback } from "react";
 import {
   Button,
   TextField
@@ -93,6 +93,73 @@ function useEffectWithTrigger(effect, watchList = []) {
   return () => setTriggerValue(triggerValue + 1);
 }
 
+const TransactionRow = React.memo(({
+  index,
+  budgets,
+  budgetInputValue,
+  onUpdate,
+  budgetInputInnerRef,
+  accountsMap,
+  date,
+  amount,
+  description,
+  showDeleteButton,
+  onDelete
+}) => (
+  <InputsRow>
+    <AutoSuggest
+      items={budgets}
+      inputValue={budgetInputValue}
+      getItemText={(item) => item.name}
+      maxSuggestions={10}
+      onChange={(newInputValue, newSelectedItem) => onUpdate(
+        index,
+        {
+          budgetInputValue: newInputValue,
+          budget: newSelectedItem
+        }
+      )}
+      label="Budget"
+      inputRef={budgetInputInnerRef}
+      renderSuggestion={(highlightedText, suggestion) => (
+        <React.Fragment>
+          <span css="margin-right: 5px; color: rgba(0, 0, 0, 0.2);">
+            ({accountsMap[suggestion.accountID].name})
+          </span>
+          {highlightedText}
+        </React.Fragment>
+      )}
+    />
+    <TextField
+      label="Date"
+      placeholder="YYYY-MM-DD"
+      value={date}
+      onChange={(event) => onUpdate(index, { date: event.target.value })}
+    />
+    <TextField
+      type="number"
+      label="Amount ($)"
+      value={amount}
+      onChange={(event) => onUpdate(index, { amount: event.target.value })}
+    />
+    <TextField
+      label="Description"
+      value={description}
+      onChange={(event) => onUpdate(index, { description: event.target.value })}
+    />
+    {showDeleteButton
+      ? (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => onDelete(index)}
+        >
+          Delete
+        </Button>
+      ) : null}
+  </InputsRow>
+));
+
 function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
   const [budgets] = useBudgets(activeDB);
   const [accountsMap] = useAccountsMap(activeDB);
@@ -108,6 +175,18 @@ function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
   const triggerLastBudgetIDFocus = useEffectWithTrigger(() => {
     lastBudgetIDRef.current.input.focus();
   });
+
+  const onTransactionUpdate = useCallback((index, transaction) => {
+    transactionsDispatch({
+      type: "update",
+      index,
+      transaction
+    });
+  }, [transactionsDispatch]);
+
+  const onTransactionDelete = useCallback((index) => {
+    transactionsDispatch({ type: "delete", index });
+  }, [transactionsDispatch]);
 
   return (
     <div>
@@ -152,74 +231,23 @@ function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
         amount,
         description,
       }, index) => (
-        <InputsRow key={key}>
-          <AutoSuggest
-            items={budgets}
-            inputValue={budgetInputValue}
-            getItemText={(item) => item.name}
-            maxSuggestions={10}
-            onChange={(newInputValue, newSelectedItem) => transactionsDispatch({
-              type: "update",
-              index,
-              transaction: {
-                budgetInputValue: newInputValue,
-                budget: newSelectedItem
-              }
-            })}
-            label="Budget"
-            inputRef={transactions.length === index + 1
-              ? lastBudgetIDRef
-              : null
-            }
-            renderSuggestion={(highlightedText, suggestion) => (
-              <React.Fragment>
-                <span css="margin-right: 5px; color: rgba(0, 0, 0, 0.2);">
-                  ({accountsMap[suggestion.accountID].name})
-                </span>
-                {highlightedText}
-              </React.Fragment>
-            )}
-          />
-          <TextField
-            label="Date"
-            placeholder="YYYY-MM-DD"
-            value={date}
-            onChange={(event) => transactionsDispatch({
-              type: "update",
-              index,
-              transaction: { date: event.target.value }
-            })}
-          />
-          <TextField
-            type="number"
-            label="Amount ($)"
-            value={amount}
-            onChange={(event) => transactionsDispatch({
-              type: "update",
-              index,
-              transaction: { amount: event.target.value }
-            })}
-          />
-          <TextField
-            label="Description"
-            value={description}
-            onChange={(event) => transactionsDispatch({
-              type: "update",
-              index,
-              transaction: { description: event.target.value }
-            })}
-          />
-          {transactions.length > 1
-            ? (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => transactionsDispatch({ type: "delete", index })}
-              >
-                Delete
-              </Button>
-            ) : null}
-        </InputsRow>
+        <TransactionRow
+          key={key}
+          index={index}
+          budgets={budgets}
+          budgetInputValue={budgetInputValue}
+          onUpdate={onTransactionUpdate}
+          budgetInputInnerRef={transactions.length === index + 1
+            ? lastBudgetIDRef
+            : null
+          }
+          accountsMap={accountsMap}
+          date={date}
+          amount={amount}
+          description={description}
+          showDeleteButton={transactions.length > 1}
+          onDelete={onTransactionDelete}
+        />
       ))}
       <InputsRow>
         <Button
