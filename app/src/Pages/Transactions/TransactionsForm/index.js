@@ -4,6 +4,7 @@ import {
   TextField
 } from "@material-ui/core";
 import styled from "styled-components/macro";
+import { v4 as uuidv4 } from "uuid";
 
 import { postTransactions } from "../../../apiCalls/transactions";
 import { useBudgets, useAccountsMap } from "../../../utilities/apiCallHooks";
@@ -31,7 +32,7 @@ const initialState = [{
   date: "",
   amount: "",
   description: "",
-  key: 0
+  key: uuidv4()
 }];
 
 function transactionsReducer(state, action) {
@@ -43,11 +44,24 @@ function transactionsReducer(state, action) {
           date: "",
           amount: "",
           description: "",
-          key: state[state.length - 1].key + 1
+          key: uuidv4()
         }
       } = action;
 
       return [...state, transaction];
+    }
+    case "duplicate": {
+      const { index } = action;
+
+      const duplicateTransaction = {
+        ...state[index],
+        key: uuidv4()
+      };
+
+      const newState = [...state];
+      newState.splice(index + 1, 0, duplicateTransaction);
+
+      return newState;
     }
     case "replace": {
       const { index, transaction } = action;
@@ -104,7 +118,9 @@ const TransactionRow = React.memo(({
   amount,
   description,
   showDeleteButton,
-  onDelete
+  showDuplicateButton,
+  onDelete,
+  onDuplicate
 }) => (
   <InputsRow>
     <AutoSuggest
@@ -157,6 +173,17 @@ const TransactionRow = React.memo(({
           Delete
         </Button>
       ) : null}
+    {showDuplicateButton
+      ? (
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => onDuplicate(index)}
+        >
+          Duplicate
+        </Button>
+      ) : null
+    }
   </InputsRow>
 ));
 
@@ -186,6 +213,10 @@ function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
 
   const onTransactionDelete = useCallback((index) => {
     transactionsDispatch({ type: "delete", index });
+  }, [transactionsDispatch]);
+
+  const onTransactionDuplicate = useCallback((index) => {
+    transactionsDispatch({ type: "duplicate", index });
   }, [transactionsDispatch]);
 
   return (
@@ -246,7 +277,9 @@ function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
           amount={amount}
           description={description}
           showDeleteButton={transactions.length > 1}
+          showDuplicateButton={transactions.length > 1}
           onDelete={onTransactionDelete}
+          onDuplicate={onTransactionDuplicate}
         />
       ))}
       <InputsRow>
@@ -260,7 +293,7 @@ function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
               type: "add",
               transaction: {
                 ...lastTransaction,
-                key: lastTransaction.key + 1
+                key: uuidv4()
               }
             });
             triggerLastBudgetIDFocus();

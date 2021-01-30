@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components/macro";
 import moment from "moment";
+import { v4 as uuidv4 } from "uuid";
 
 const ActionButtonRow = styled.div`
   text-align: right;
@@ -19,14 +20,14 @@ const ActionButtonRow = styled.div`
 
 function parseTDCSVTransactions(text) {
 	const lines = text.split("\n");
-	const transactions = lines.map((line, index) => {
+	const transactions = lines.map((line) => {
 		const [tdDate, tdDescription, tdWithdrawal, tdDeposit] = line.split(",");
 
 		const withdrawal = tdWithdrawal ? Number(tdWithdrawal) : 0;
 		const deposit = tdDeposit ? Number(tdDeposit) : 0;
 
 		return {
-			key: index,
+			key: uuidv4(),
 			budgetID: "",
 			date: moment(tdDate, "MM/DD/YYYY").format("YYYY-MM-DD"),
 			amount: (deposit - withdrawal).toString(),
@@ -39,14 +40,14 @@ function parseTDCSVTransactions(text) {
 
 function parseCIBCCSVTransactions(text) {
 	const lines = text.split("\n");
-	const transactions = lines.map((line, index) => {
+	const transactions = lines.map((line) => {
 		const [cibcDate, cibcDescription, cibcWithdrawal, cibcDeposit] = line.split(",");
 
 		const withdrawal = cibcWithdrawal ? Number(cibcWithdrawal) : 0;
 		const deposit = cibcDeposit ? Number(cibcDeposit) : 0;
 
 		return {
-			key: index,
+			key: uuidv4(),
 			budgetID: "",
 			date: cibcDate,
 			amount: (deposit - withdrawal).toString(),
