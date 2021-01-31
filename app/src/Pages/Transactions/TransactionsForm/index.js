@@ -1,15 +1,11 @@
 import React, { useState, useReducer, useRef, useEffect, useCallback } from "react";
-import {
-  Button,
-  TextField
-} from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import styled from "styled-components/macro";
 import { v4 as uuidv4 } from "uuid";
 
 import { postTransactions } from "../../../apiCalls/transactions";
 import { useBudgets, useAccountsMap } from "../../../utilities/apiCallHooks";
 import { QuickTransferModal } from "../../../components/modals";
-import { AutoSuggest } from "../../../components/inputs";
 import { InputsRow } from "../../../components/layout";
 
 import CSVLoader from "./CSVLoader";

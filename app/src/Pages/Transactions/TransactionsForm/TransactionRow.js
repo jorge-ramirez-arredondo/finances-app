@@ -47,7 +47,6 @@ const TransactionRow = React.memo(({
       <InputsSubRow>
         <div css="flex: 0.65 1 0;">
         <AutoSuggest
-          style="flex: 1 1 0;"
           items={budgets}
           inputValue={budgetInputValue}
           getItemText={(item) => item.name}
