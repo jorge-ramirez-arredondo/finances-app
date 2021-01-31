@@ -11,7 +11,10 @@ import { useBudgets, useAccountsMap } from "../../../utilities/apiCallHooks";
 import { QuickTransferModal } from "../../../components/modals";
 import { AutoSuggest } from "../../../components/inputs";
 import { InputsRow } from "../../../components/layout";
+
 import CSVLoader from "./CSVLoader";
+import TransactionRow from "./TransactionRow";
+
 
 const ActionButtonRow = styled.div`
   text-align: right;
@@ -106,86 +109,6 @@ function useEffectWithTrigger(effect, watchList = []) {
 
   return () => setTriggerValue(triggerValue + 1);
 }
-
-const TransactionRow = React.memo(({
-  index,
-  budgets,
-  budgetInputValue,
-  onUpdate,
-  budgetInputInnerRef,
-  accountsMap,
-  date,
-  amount,
-  description,
-  showDeleteButton,
-  showDuplicateButton,
-  onDelete,
-  onDuplicate
-}) => (
-  <InputsRow>
-    <AutoSuggest
-      items={budgets}
-      inputValue={budgetInputValue}
-      getItemText={(item) => item.name}
-      maxSuggestions={10}
-      onChange={(newInputValue, newSelectedItem) => onUpdate(
-        index,
-        {
-          budgetInputValue: newInputValue,
-          budget: newSelectedItem
-        }
-      )}
-      label="Budget"
-      inputRef={budgetInputInnerRef}
-      renderSuggestion={(highlightedText, suggestion) => (
-        <React.Fragment>
-          <span css="margin-right: 5px; color: rgba(0, 0, 0, 0.2);">
-            ({accountsMap[suggestion.accountID].name})
-          </span>
-          {highlightedText}
-        </React.Fragment>
-      )}
-    />
-    <TextField
-      label="Date"
-      placeholder="YYYY-MM-DD"
-      value={date}
-      onChange={(event) => onUpdate(index, { date: event.target.value })}
-    />
-    <TextField
-      type="number"
-      label="Amount ($)"
-      value={amount}
-      onChange={(event) => onUpdate(index, { amount: event.target.value })}
-    />
-    <TextField
-      label="Description"
-      value={description}
-      onChange={(event) => onUpdate(index, { description: event.target.value })}
-    />
-    {showDeleteButton
-      ? (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onDelete(index)}
-        >
-          Delete
-        </Button>
-      ) : null}
-    {showDuplicateButton
-      ? (
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => onDuplicate(index)}
-        >
-          Duplicate
-        </Button>
-      ) : null
-    }
-  </InputsRow>
-));
 
 function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
   const [budgets] = useBudgets(activeDB);
