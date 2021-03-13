@@ -18,6 +18,12 @@ const ActionButtonRow = styled.div`
   margin: 20px;
 `;
 
+function transactionDateSortCompare(a, b) {
+	if (a.date < b.date) return -1;
+	if (a.date > b.date) return 1;
+	return 0;
+}
+
 function parseTDCSVTransactions(text) {
 	const lines = text.split("\n");
 	const transactions = lines.map((line) => {
@@ -35,7 +41,7 @@ function parseTDCSVTransactions(text) {
 		};
 	});
 
-	return transactions;
+	return transactions.sort(transactionDateSortCompare);
 }
 
 function parseCIBCCSVTransactions(text) {
@@ -55,11 +61,7 @@ function parseCIBCCSVTransactions(text) {
 		};
 	});
 
-	// By default, transactions from CIBC CSV's come in desc order by date.
-	// Switched to match asc order for the sake of consistency with TD CSV's.
-	transactions.reverse();
-
-	return transactions;
+	return transactions.sort(transactionDateSortCompare);
 }
 
 const bankParsersMap = {
