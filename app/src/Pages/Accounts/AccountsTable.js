@@ -7,12 +7,15 @@ import {
   TableRow
 } from "@material-ui/core";
 
+import useMoneyColorClassGetter from "../../utilities/useMoneyColorClassGetter";
 import { useAccountTotals } from "../../utilities/apiCallHooks";
 import { amountFormatter } from "../../utilities/displayFormatters";
 import { Section } from "../../components/layout";
 
 function AccountsTable({ activeDB }) {
   const [accountTotals] = useAccountTotals(activeDB);
+
+  const moneyColorClassGetter = useMoneyColorClassGetter();
 
   return (
     <Section>
@@ -31,7 +34,14 @@ function AccountsTable({ activeDB }) {
               <TableRow key={accountTotal.id}>
                 <TableCell>{accountTotal.name}</TableCell>
                 <TableCell>{accountTotal.description}</TableCell>
-                <TableCell align="right">{amountFormatter(accountTotal.total)}</TableCell>
+                <TableCell
+                  align="right"
+                  classes={{
+                    root: moneyColorClassGetter(accountTotal.total)
+                  }}
+                >
+                  {amountFormatter(accountTotal.total)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

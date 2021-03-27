@@ -15,4 +15,15 @@ const theme = createMuiTheme({
   }
 });
 
+const colors = {
+  money: {
+    positive: "#016535",
+    negative: "#B40606",
+    zero: "#4c4c4c"
+  }
+};
+
 export default theme;
+export {
+  colors
+};

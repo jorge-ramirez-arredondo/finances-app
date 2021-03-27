@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components";
 
+import useMoneyColorClassGetter from "../../utilities/useMoneyColorClassGetter";
 import { useAccountsMap, useBudgetsMap, usePaginatedTransactions } from "../../utilities/apiCallHooks";
 import { amountFormatter } from "../../utilities/displayFormatters";
 import { Section } from "../../components/layout";
@@ -23,6 +24,8 @@ function TransactionsTable({ activeDB }) {
 	const [budgetsMap] = useBudgetsMap(activeDB);
 	const [accountsMap] = useAccountsMap(activeDB);
 	const [transactions, loadMoreTransactions, isLoading] = usePaginatedTransactions(activeDB);
+
+  const moneyColorClassGetter = useMoneyColorClassGetter();
 
 	return (
 		<Section>
@@ -48,7 +51,14 @@ function TransactionsTable({ activeDB }) {
 									<TableCell>{account.name}</TableCell>
 									<TableCell>{budget.name}</TableCell>
 									<TableCell>{transaction.date}</TableCell>
-									<TableCell align="right">{amountFormatter(transaction.amount)}</TableCell>
+									<TableCell
+										align="right"
+										classes={{
+										  root: moneyColorClassGetter(transaction.amount)
+										}}
+									>
+										{amountFormatter(transaction.amount)}
+									</TableCell>
 									<TableCell>{transaction.description}</TableCell>
 								</TableRow>
 							);
