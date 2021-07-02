@@ -89,13 +89,13 @@ function QuickTransferModal(props) {
         budgetID: fromBudget.value.id,
         date,
         amount: dollarsToCents(-Number(amount)),
-        description: `Transfer from ${fromBudget.value.name}: ${description}`
+        description: `Transfer to ${toBudget.value.name}: ${description}`
       },
       {
         budgetID: toBudget.value.id,
         date,
         amount: dollarsToCents(Number(amount)),
-        description: `Transfer to ${toBudget.value.name}: ${description}`
+        description: `Transfer from ${fromBudget.value.name}: ${description}`
       }
     ];
 
