@@ -7,6 +7,7 @@ import { getBudgetTotals as getBudgetTotalsCall } from "../apiCalls/budgetTotals
 import { getBudgets as getBudgetsCall } from "../apiCalls/budgets";
 import { getTransactions as getTransactionsCall } from "../apiCalls/transactions";
 import { getTransactionSets as getTransactionSetsCall } from "../apiCalls/transactionSets";
+import { getBudgetMonthlyTotals as getBudgetMonthlyTotalsCall } from "../apiCalls/stats";
 
 // DBs
 function useDBs() {
@@ -171,6 +172,20 @@ function useTransactionSets(activeDB) {
   return [transactionSets, getTransactionSets];
 }
 
+// Stats
+function useBudgetMonthlyTotals(activeDB) {
+  const [budgetMonthlyTotals, setBudgetMonthlyTotals] = useState(null);
+
+  const getBudgetMonthlyTotals = useCallback(async () => {
+    setBudgetMonthlyTotals(await getBudgetMonthlyTotalsCall(activeDB));
+  }, [activeDB]);
+
+  useEffect(() => {
+    getBudgetMonthlyTotals();
+  }, [getBudgetMonthlyTotals]);
+
+  return [budgetMonthlyTotals, getBudgetMonthlyTotals];
+}
 
 export {
   useDBs,
@@ -181,5 +196,6 @@ export {
   useBudgetsMap,
   useBudgetTotals,
   usePaginatedTransactions,
-  useTransactionSets
+  useTransactionSets,
+  useBudgetMonthlyTotals
 };

@@ -7,6 +7,7 @@ import Accounts from "../Pages/Accounts";
 import Budgets from "../Pages/Budgets";
 import Transactions from "../Pages/Transactions";
 import TransactionSets from "../Pages/TransactionSets";
+import Stats from "../Pages/Stats";
 
 function AppRouter(props) {
   const [activeDB, setActiveDB, dbs, getDBs] = useDBsManagementContext();
@@ -57,6 +58,15 @@ function AppRouter(props) {
         path="/transactionSets"
         render={(renderProps) => (
           <TransactionSets
+            {...renderProps}
+            activeDB={activeDB}
+          />
+        )}
+      />
+      <Route
+        path="/stats"
+        render={(renderProps) => (
+          <Stats
             {...renderProps}
             activeDB={activeDB}
           />

@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/MeMark2/finances-app#readme",
   "dependencies": {
-    "concurrently": "^4.1.2"
+    "concurrently": "^7.1.0"
   }
 }
