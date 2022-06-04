@@ -121,7 +121,20 @@ function useBudgetTotals(activeDB) {
 }
 
 // Transactions
-function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc", limit = 10 } = {}) {
+function usePaginatedTransactions(
+  activeDB,
+  {
+    budgetID,
+    descriptionSearch,
+    dateFrom,
+    dateTo,
+    amountFrom,
+    amountTo,
+    orderBy = "date",
+    orderDir = "desc",
+    limit = 10
+  } = {}
+) {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -129,6 +142,12 @@ function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc
     async function loadInitialTransactions() {
       setIsLoading(true);
       const initialTransactions = await getTransactionsCall(activeDB, {
+        budgetID,
+        descriptionSearch,
+        dateFrom,
+        dateTo,
+        amountFrom,
+        amountTo,
         orderBy,
         orderDir,
         limit,
@@ -139,11 +158,28 @@ function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc
       setIsLoading(false);
     }
     loadInitialTransactions();
-  }, [activeDB, orderBy, orderDir, limit]);
+  }, [
+    activeDB,
+    budgetID,
+    descriptionSearch,
+    dateFrom,
+    dateTo,
+    amountFrom,
+    amountTo,
+    orderBy,
+    orderDir,
+    limit
+  ]);
 
   const loadMoreTransactions = useCallback(async () => {
     setIsLoading(true);
     const newTransactions = await getTransactionsCall(activeDB, {
+      budgetID,
+      descriptionSearch,
+      dateFrom,
+      dateTo,
+      amountFrom,
+      amountTo,
       orderBy,
       orderDir,
       limit,
@@ -152,7 +188,19 @@ function usePaginatedTransactions(activeDB, { orderBy = "date", orderDir = "desc
 
     setTransactions([...transactions, ...newTransactions]);
     setIsLoading(false);
-  }, [activeDB, transactions, orderBy, orderDir, limit]);
+  }, [
+    activeDB,
+    transactions,
+    budgetID,
+    descriptionSearch,
+    dateFrom,
+    dateTo,
+    amountFrom,
+    amountTo,
+    orderBy,
+    orderDir,
+    limit
+  ]);
 
   return [transactions, loadMoreTransactions, isLoading];
 }

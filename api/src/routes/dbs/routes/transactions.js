@@ -7,6 +7,12 @@ const columns = ["id","budgetID","date","amount","description"];
 const dirs = ["asc", "desc"];
 
 const getTransactionsQuerySchema = Joi.object().keys({
+  budgetID: Joi.number().integer().positive(),
+  descriptionSearch: Joi.string().allow(""),
+  dateFrom: Joi.date().iso(),
+  dateTo: Joi.date().iso(),
+  amountFrom: Joi.number().integer(),
+  amountTo: Joi.number().integer(),
   orderBy: Joi.string().valid(...columns).insensitive(),
   orderDir: Joi.string().valid(...dirs).insensitive(),
   limit: Joi.number().integer().positive(),
@@ -21,6 +27,12 @@ router.get("/", async (req, res) => {
 
   const { db } = req;
   const {
+    budgetID,
+    descriptionSearch,
+    dateFrom,
+    dateTo,
+    amountFrom,
+    amountTo,
     orderBy = columns[0],
     orderDir = dirs[0],
     limit,
@@ -28,6 +40,30 @@ router.get("/", async (req, res) => {
   } = req.query;
 
   const dbQuery = db("Transactions");
+
+  if (budgetID) {
+    dbQuery.where("budgetID", budgetID);
+  }
+
+  if (descriptionSearch) {
+    dbQuery.where("description", "like", `%${descriptionSearch}%`);
+  }
+
+  if (dateFrom) {
+    dbQuery.where("date", ">=", dateFrom);
+  }
+
+  if (dateTo) {
+    dbQuery.where("date", "<=", dateTo);
+  }
+
+  if (!isNaN(amountFrom)) {
+    dbQuery.where("amount", ">=", amountFrom);
+  }
+
+  if (!isNaN(amountTo)) {
+    dbQuery.where("amount", "<=", amountTo);
+  }
 
   const _orderBy = _.find(columns, (column) => column.toLowerCase() === orderBy);
   if (_orderBy) {
