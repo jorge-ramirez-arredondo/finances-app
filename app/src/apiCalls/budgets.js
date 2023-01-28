@@ -1,7 +1,7 @@
 import http from "./http";
 
-async function getBudgets(dbName) {
-  return (await http.get(`/dbs/${dbName}/budgets`)).data;
+async function getBudgets(dbName, params) {
+  return (await http.get(`/dbs/${dbName}/budgets`, { params })).data;
 }
 
 async function putBudget(dbName, budget) {

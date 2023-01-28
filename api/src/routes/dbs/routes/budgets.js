@@ -2,9 +2,26 @@ const Joi = require("@hapi/joi");
 const router = require("express").Router();
 
 // Get Budgets
+const getBudgetsParamSchema = Joi.object().keys({
+  active: Joi.boolean()
+});
+
 router.get("/", async (req, res) => {
-  const { db } = req;
-  const budgets = await db("Budgets");
+  const { error } = getBudgetsParamSchema.validate(req.query);
+  if (error) {
+    return res.status(400).send(error);
+  }
+
+  const { db, query } = req;
+  const { active } = query;
+
+  const dbQuery = db("Budgets");
+
+  if (active !== undefined && active !== null) {
+    dbQuery.where("active", active === "true");
+  }
+
+  const budgets = await dbQuery;
 
   res.json(budgets);
 });
@@ -32,13 +49,14 @@ router.post("/", async (req, res) => {
   return res.status(200).end();
 });
 
-// Creat/Replace Budget
+// Create/Replace Budget
 const putBudgetBodySchema = Joi.object().keys({
   budget: Joi.object().keys({
     id: Joi.number().integer(),
     accountID: Joi.number().integer().required(),
     name: Joi.string().required(),
-    description: Joi.string().allow("")
+    description: Joi.string().allow(""),
+    active: Joi.boolean()
   })
 });
 
@@ -53,17 +71,23 @@ router.put("/", async (req, res) => {
     id,
     accountID,
     name,
-    description
+    description,
+    active
   } } = req.body;
 
   if (id !== null && id !== undefined) {
     // Replace existing budget if there's an id
     await db("Budgets")
-      .where({ id: id })
-      .update({ accountID, name, description });
+      .where({ id })
+      .update({ accountID, name, description, active });
   } else {
     // Create budget if there's no id
-    await db("Budgets").insert({ accountID, name, description });
+    await db("Budgets").insert({
+      accountID,
+      name,
+      description,
+      ...(active && { active })
+    });
   }
 
   return res.status(200).end();

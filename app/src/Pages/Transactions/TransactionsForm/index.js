@@ -107,7 +107,7 @@ function useEffectWithTrigger(effect, watchList = []) {
 }
 
 function TransactionsForm({ activeDB, onSaveSuccess, onQuickTransferSuccess }) {
-  const [budgets] = useBudgets(activeDB);
+  const [budgets] = useBudgets(activeDB, { active: true });
   const [accountsMap] = useAccountsMap(activeDB);
   const [
     transactions,

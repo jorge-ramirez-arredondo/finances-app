@@ -234,7 +234,7 @@ function TransactionSetForm({
 }
 
 function TransactionSetFormWrapper({ activeDB, editableTransactionSet, ...rest }) {
-  const [budgets] = useBudgets(activeDB);
+  const [budgets] = useBudgets(activeDB, { active: true });
   const [budgetsMap] = useBudgetsMap(activeDB);
   const [accountsMap] = useAccountsMap(activeDB);
 

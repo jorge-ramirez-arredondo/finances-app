@@ -38,7 +38,7 @@ function TransactionsTable({ activeDB }) {
 	const [amountFrom, setAmountFrom] = useState();
 	const [amountTo, setAmountTo] = useState();
 
-	const [budgets] = useBudgets(activeDB);
+	const [budgets] = useBudgets(activeDB, { active: true });
 	const [budgetsMap] = useBudgetsMap(activeDB);
 	const [accountsMap] = useAccountsMap(activeDB);
 

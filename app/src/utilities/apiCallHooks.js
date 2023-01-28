@@ -73,12 +73,12 @@ function useAccountTotals(activeDB) {
 }
 
 // Budgets
-function useBudgets(activeDB) {
+function useBudgets(activeDB, { active } = {}) {
   const [budgets, setBudgets] = useState(null);
 
   const getBudgets = useCallback(async () => {
-    setBudgets(await getBudgetsCall(activeDB));
-  }, [activeDB]);
+    setBudgets(await getBudgetsCall(activeDB, { active }));
+  }, [activeDB, active]);
 
   useEffect(() => {
     getBudgets();
@@ -87,8 +87,8 @@ function useBudgets(activeDB) {
   return [budgets, getBudgets];
 }
 
-function useBudgetsMap(activeDB) {
-  const [budgets, getBudgets] = useBudgets(activeDB);
+function useBudgetsMap(activeDB, params) {
+  const [budgets, getBudgets] = useBudgets(activeDB, params);
 
   const budgetsMap = useMemo(() => {
     if (!budgets) return null;

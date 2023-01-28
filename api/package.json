@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon ./src/index.js",
+    "knex:migrate:make": "knex migrate:make",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

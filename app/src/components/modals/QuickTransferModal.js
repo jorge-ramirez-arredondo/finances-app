@@ -32,7 +32,7 @@ const initalTextboxValue = "";
 function QuickTransferModal(props) {
   const { activeDB, open, onClose, onTransferSuccess } = props;
 
-  const [budgets] = useBudgets(activeDB);
+  const [budgets] = useBudgets(activeDB, { active: true });
   const [accountsMap] = useAccountsMap(activeDB);
 
   const [fromBudget, setFromBudget] = useState(initalAutoSuggestValue);
